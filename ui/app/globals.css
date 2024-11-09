@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Reset defaults for full viewport coverage */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto; /* Allow vertical scrolling */
+    overflow-x: auto; /* Prevent horizontal scrolling */
+  }
+
+  #root, main {
+    width: 100%;
+    height: auto; /* Allow height to expand based on content */
+    min-height: 100%; /* Ensure it covers at least full viewport height */
+    position: relative;
+  }
+
+  /* Hide scrollbars while maintaining functionality */
+  .overflow-hidden-scrollable {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: auto; /* Allow vertical scrolling */
+  }
+
+  .overflow-hidden-scrollable::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in WebKit browsers */
+  }
+
+  /* Dot pattern background */
+  .dot-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: 
+      radial-gradient(circle, rgba(232, 220, 220, 0.151) 20%, transparent 20%),
+      radial-gradient(circle, rgba(97, 94, 94, 0.148) 20%, transparent 20%);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+    pointer-events: none;
+   /* Behind other content */
+  }
+
+  /* Gradient overlay */
+  .gradient-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.737) 30%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none; 
+    z-index: 1; /* Above dot background but below other content */
+   }
+}

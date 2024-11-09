@@ -1,0 +1,70 @@
+services:
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    ports:
+      - 4000:8080
+    networks:
+      - ved-network
+    restart: unless-stopped
+
+  ved-backend:
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    image: ved/ved-backend:main
+    environment:
+      - SEARXNG_API_URL=http://searxng:8080
+    depends_on:
+      - searxng
+    ports:
+      - 3001:3001
+    volumes:
+      - backend-dbstore:/app/data:rw
+      - ./config.toml:/app/config.toml:rw
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    networks:
+      - ved-network
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /home/ved
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: backend.dockerfile
+
+  ved-frontend:
+    build:
+      context: .
+      dockerfile: app.dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://127.0.0.1:3001/api
+        - NEXT_PUBLIC_WS_URL=ws://127.0.0.1:3001
+    image: ved/ved-frontend:main
+    depends_on:
+      - ved-backend
+    ports:
+      - 3000:3000
+    networks:
+      - ved-network
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules/
+            - .next/
+        - action: rebuild
+          path: app.dockerfile
+networks:
+  ved-network:
+
+volumes:
+  backend-dbstore:

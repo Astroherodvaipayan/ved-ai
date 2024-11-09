@@ -1,0 +1,45 @@
+# config.yml
+
+general:
+  port: 3001
+  similarity_measure: cosine
+
+api_keys:
+  openai: YOUR_OPENAI_API_KEY
+  groq: "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"
+  anthropic: YOUR_ANTHROPIC_API_KEY
+  gemini: YOUR_GEMINI_API_KEY
+
+api_endpoints:
+  searxng: http://searxng:8080
+  ollama: http://host.docker.internal:11434
+
+database:
+  dialect: sqlite
+  url: ./data/db.sqlite
+
+paths:
+  schema: ./src/db/schema.ts
+  output: ./drizzle
+
+docker:
+  services:
+    ved-backend:
+      build:
+        context: .
+        dockerfile: backend.dockerfile
+      ports:
+        - "3001:3001"
+      volumes:
+        - backend-dbstore:/home/ved/data
+      environment:
+        - SEARXNG_API_URL=http://searxng:8080
+    ved-frontend:
+      build:
+        context: .
+        dockerfile: app.dockerfile
+      ports:
+        - "3000:3000"
+      depends_on:
+        - ved-backend
+
