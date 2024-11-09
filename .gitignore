@@ -12,11 +12,3 @@ yarn-error.log
 # Config files
 config.toml
 
-
-# Miscellaneous
-.DS_Store
-Thumbs.db
-
-# Db
-db.sqlite
-
